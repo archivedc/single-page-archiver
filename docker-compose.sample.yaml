@@ -11,3 +11,11 @@ services:
     ports:
       - 80:80
     restart: unless-stopped
+
+  db:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: spa
+      MYSQL_USER: spa
+      MYSQL_PASSWORD: spa
+      MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
