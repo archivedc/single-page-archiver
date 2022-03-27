@@ -7,10 +7,10 @@ RUN composer install
 
 FROM php:apache-bullseye
 
-RUN apt-get update \
-    && apt-get -y install sudo \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get -y install \
+    sudo \
+    screen \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN echo "www-data ALL=NOPASSWD: /usr/bin/docker" >> /etc/sudoers
 
