@@ -3,11 +3,11 @@ ini_set("max_execution_time", 0);
 require_once '_config.php';
 require_once '_dbinit.php';
 
-if (!isset($_GET['url']) && !isset($POST_['url'])) {
+if (!isset($_GET['url']) && !isset($_POST['url'])) {
     die('No URL specified');
 }
 
-$url = isset($_GET['url']) ? $_GET['url'] : $POST_['url'];
+$url = isset($_GET['url']) ? $_GET['url'] : $_POST['url'];
 
 $parsed_url = parse_url($url);
 if ($parsed_url === false)
