@@ -5,7 +5,7 @@ COPY composer.lock /app
 
 RUN composer install
 
-FROM php:apache
+FROM php:apache-bullseye
 
 RUN apt-get update \
     && apt-get -y install sudo \
