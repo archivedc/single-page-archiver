@@ -58,12 +58,6 @@ function compareFiles($file_a, $file_b)
     return true;
 }
 
-
-function addItemWithHash($path, $hash)
-{
-}
-
-
 foreach ($files as $file)
 {
     $rfpath = substr($file, strlen($basedatadir) + 1);
