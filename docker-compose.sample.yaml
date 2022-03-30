@@ -6,7 +6,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /usr/bin/docker:/usr/bin/docker:ro
-      - /home/doe/archives:/var/www/html/data:ro
+      - /home/doe/archives:/var/www/html/data
       # - ./_config.php:/var/www/html/_config.php:ro
     ports:
       - 80:80
