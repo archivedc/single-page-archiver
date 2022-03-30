@@ -22,7 +22,7 @@ $list = $db->query("SELECT time, url FROM history ORDER BY time DESC LIMIT 30");
     <ul>
         <?php foreach ($list as $entry) : ?>
             <li>
-                <a href="data/<?= $entry['time'] ?>/<?= $entry['url'] ?>"><?= $entry['url'] ?> - <?= $entry['time'] ?></a>
+                <a href="data/<?= $entry['time'] ?>/<?= $entry['url'] ?>"><?= $entry['url'] ?> - <?= date('Y/m/d H:i:s', $entry['time']) ?></a>
             </li>
         <?php endforeach; ?>
     </ul>
