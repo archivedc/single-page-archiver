@@ -1,7 +1,11 @@
 <?php
 require_once '_dbinit.php';
 
-$list = $db->query("SELECT time, url FROM history ORDER BY time DESC LIMIT 30");
+$list = $db->query("SELECT time, url, title FROM history ORDER BY time DESC LIMIT 30");
+
+function xss(string $s): string {
+    return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8', false);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -22,7 +26,11 @@ $list = $db->query("SELECT time, url FROM history ORDER BY time DESC LIMIT 30");
     <ul>
         <?php foreach ($list as $entry) : ?>
             <li>
-                <a href="data/<?= $entry['time'] ?>/<?= $entry['url'] ?>"><?= $entry['url'] ?> - <?= date('Y/m/d H:i:s', $entry['time']) ?></a>
+                <a href="data/<?= $entry['time'] ?>/<?= str_replace('%2F', '/', rawurldecode($entry['url'])) ?>">
+                    <?= xss($entry['title'] ?? 'No title') ?>
+                    (<?= xss($entry['url']) ?>)
+                </a>
+                - <?= xss(date('Y/m/d H:i:s', $entry['time'])) ?>
             </li>
         <?php endforeach; ?>
     </ul>

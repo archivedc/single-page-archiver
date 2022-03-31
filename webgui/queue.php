@@ -16,7 +16,6 @@ if ($parsed_url === false)
 $utime = time();
 
 exec("sudo docker run --rm -v $hostdir/$utime:/data $image -nc -k -t 5 -p -E -H -e robots=off --no-check-certificate \"$url\"", $output);
-exec("screen -d -m php /var/www/html/scripts/link.php $utime");
 
 $host = $parsed_url['host'];
 $path = $parsed_url['path'];
@@ -25,13 +24,45 @@ if (!empty($parsed_url['query'])) $path .= '?' . $paesed_url['query'];
 
 $path = '/' . ltrim($path, '/');
 
+
+# From: https://stackoverflow.com/a/399357
+function page_title($url) {
+    $fp = file_get_contents($url);
+    if (!$fp) 
+        return null;
+
+    $res = preg_match("/<title>(.*)<\/title>/siU", $fp, $title_matches);
+    if (!$res) 
+        return null; 
+
+    // Clean up title: remove EOL's and excessive whitespace.
+    $title = preg_replace('/\s+/', ' ', $title_matches[1]);
+    $title = trim($title);
+    return $title;
+}
+
+$inst_path = $path;
+$eval_path = mb_strtolower($path);
+
+$title = null;
+if (str_ends_with($eval_path, '.html') || str_ends_with($eval_path, '.htm')){
+    $title = page_title("data/$utime/$host$path");
+}
+elseif (is_file("data/$utime/$host$path.html"))
+{
+    $title = page_title("data/$utime/$host$path.html");
+}
+
 $db->insert('history', [
     'time' => strval($utime),
     'url' => "$host$path",
+    'title' => $title,
 ]);
 
 $path = rawurlencode($path);
 $path = str_replace('%2F', '/', $path);
+
+exec("screen -d -m php /var/www/html/scripts/link.php $utime");
 
 http_response_code(303);
 header("Location: data/$utime/$host$path");

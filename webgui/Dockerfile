@@ -14,7 +14,7 @@ RUN apt-get update && apt-get -y install \
 
 RUN echo "www-data ALL=NOPASSWD: /usr/bin/docker" >> /etc/sudoers
 
-RUN docker-php-ext-install mysqli
+RUN docker-php-ext-install mysqli mbstring
 
 RUN a2enmod rewrite
 
