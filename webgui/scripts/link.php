@@ -8,6 +8,7 @@ require_once __DIR__ . '/../_dbinit.php';
 
 $basedatadir = ($websrv_archivedir ?? '/var/www/html/data');
 $scandir = $basedatadir . DIRECTORY_SEPARATOR . $argv[1];
+$utime = $argv[1];
 
 function scanfiles($path)
 {
@@ -60,7 +61,7 @@ function compareFiles($file_a, $file_b)
 
 foreach ($files as $file)
 {
-    $rfpath = substr($file, strlen($basedatadir) + 1);
+    $rfpath = substr($file, strlen($scandir) + 1);
     $hash = hash_file($file_hash_type ?? 'sha256', $file);
     print($rfpath . "\t" . $hash . "\n");
     
@@ -98,6 +99,7 @@ foreach ($files as $file)
     if ($found) continue;
 
     $db->insert('files', [
+        'time' => $utime,
         'path' => $rfpath,
         'hash' => $hash,
     ]);
