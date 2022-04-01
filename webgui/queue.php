@@ -9,6 +9,11 @@ if (!isset($_GET['url']) && !isset($_POST['url'])) {
 
 $url = isset($_GET['url']) ? $_GET['url'] : $_POST['url'];
 
+if (!filter_var($url, FILTER_VALIDATE_URL))
+{
+    die('Not valid URL');
+}
+
 $parsed_url = parse_url($url);
 if ($parsed_url === false)
     die ('Not valid url');
@@ -47,6 +52,10 @@ $eval_path = mb_strtolower($path);
 $title = null;
 if (str_ends_with($eval_path, '.html') || str_ends_with($eval_path, '.htm')){
     $title = page_title("data/$utime/$host$path");
+}
+elseif (str_ends_with($eval_path, '/') && is_file("data/$utime/$host$path" . 'index.html'))
+{
+    $title = page_title("data/$utime/$host$path" . 'index.html');
 }
 elseif (is_file("data/$utime/$host$path.html"))
 {
