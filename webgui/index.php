@@ -27,9 +27,9 @@ function xss(string $s): string {
         <?php foreach ($list as $entry) : ?>
             <li>
                 <a href="data/<?= $entry['time'] ?>/<?= str_replace('%2F', '/', rawurldecode($entry['url'])) ?>">
-                    <?= xss($entry['title'] ?? 'No title') ?>
-                    (<?= xss($entry['url']) ?>)
+                    <?= xss($entry['title'] ?? $entry['url']) ?>
                 </a>
+                (<a href="https://<?= $entry['url'] ?>" title="<?= xss($entry['url']) ?>">original</a>)
                 - <?= xss(date('Y/m/d H:i:s', $entry['time'])) ?>
             </li>
         <?php endforeach; ?>
