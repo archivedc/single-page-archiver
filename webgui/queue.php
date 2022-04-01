@@ -20,7 +20,7 @@ if ($parsed_url === false)
 
 $utime = time();
 
-exec("sudo docker run --rm -v $hostdir/$utime:/data $image -nc -k -t 5 -p -E -H -e robots=off --no-check-certificate \"$url\"", $output);
+exec("sudo docker run --rm -v $hostdir/$utime:/data $image -nc -k -t 5 -p -E -H --no-verbose -e robots=off --no-check-certificate \"$url\"", $output);
 
 $host = $parsed_url['host'];
 $path = $parsed_url['path'];
