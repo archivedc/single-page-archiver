@@ -1,11 +1,8 @@
 <?php
+require_once '_shared.php';
 require_once '_dbinit.php';
 
-$list = $db->query("SELECT time, url, title FROM history ORDER BY time DESC LIMIT 30");
-
-function xss(string $s): string {
-    return htmlspecialchars($s, ENT_QUOTES | ENT_SUBSTITUTE | ENT_HTML5, 'UTF-8', false);
-}
+$list = $db->query("SELECT time, url AS path, title FROM history ORDER BY time DESC LIMIT 30");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -13,26 +10,57 @@ function xss(string $s): string {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel ="stylesheet" href="vendor/twbs/bootstrap/dist/css/bootstrap.css">
     <title>Single Page Archive</title>
 </head>
 <body>
-    <form action="queue.php" method="post">
-        <div>
-            <label for="url">Archive URL</label>
-            <input type="url" name="url" id="url">
+    <div class="container">
+        <div class="row mt-3">
+            <div class="col">
+                <form action="queue.php" method="post">
+                    <div class="mb-3">
+                        <label for="url" class="form-label">Archive URL</label>
+                        <input type="url" name="url" class="form-control" id="url">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Archive</button>
+                </form>
+            </div>
         </div>
-        <input type="submit" value="Archive">
-    </form>
-    <ul>
-        <?php foreach ($list as $entry) : ?>
-            <li>
-                <a href="data/<?= $entry['time'] ?>/<?= str_replace('%2F', '/', rawurldecode($entry['url'])) ?>">
-                    <?= xss($entry['title'] ?? $entry['url']) ?>
-                </a>
-                (<a href="https://<?= $entry['url'] ?>" title="<?= xss($entry['url']) ?>">original</a>)
-                - <?= xss(date('Y/m/d H:i:s', $entry['time'])) ?>
-            </li>
-        <?php endforeach; ?>
-    </ul>
+        <div class="row mt-3">
+            <div class="col">
+                <form action="search.php" method="get">
+                    <div class="mb-3">
+                        <label for="title" class="form-label">Article Title</label>
+                        <input type="text" name="q" class="form-control" id="title">
+                    </div>
+                    <div class="mb-3">
+                        <label for="path" class="form-label">Content Path</label>
+                        <input type="text" name="url" class="form-control" id="path">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Title/URL</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($list as $r) : ?>
+               <tr>
+                   <td>
+                        <a href="data/<?= $r['time'] ?>/<?= str_replace('%2F', '/', rawurldecode($r['path'])) ?>">
+                            <?= xss($r['title'] ?? $r['path']) ?>
+                        </a>
+                    </td>
+                    <td><?=xss(date('Y/m/d H:i:s', $r['time']))?></td>
+               </tr> 
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 </body>
 </html>
