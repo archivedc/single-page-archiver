@@ -2,7 +2,7 @@
 require_once '_shared.php';
 require_once '_dbinit.php';
 
-$list = $db->query("SELECT time, url AS path, title FROM history ORDER BY time DESC LIMIT 30");
+$list = $db->query("SELECT time, url AS path, title FROM history WHERE unlisted = 0 ORDER BY time DESC LIMIT 30");
 ?>
 <!DOCTYPE html>
 <html lang="en">
